@@ -1,1 +1,5 @@
-
+grpc_url = "http://rpc.neutron.quokkastake.io"
+grpc_port = "9090"
+chain_id = "neutron-1"
+owner = "neutron1todo"
+coprocessor_app_id = "todo"

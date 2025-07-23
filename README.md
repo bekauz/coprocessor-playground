@@ -20,7 +20,7 @@ To install:
 ```bash
 cargo install \
   --git https://github.com/timewave-computer/valence-coprocessor.git \
-  --tag v0.3.1 \
+  --tag v0.3.7 \
   --locked cargo-valence
 ```
 
@@ -115,42 +115,3 @@ The Valence Zero-Knowledge circuit. It serves as a recipient for witness data (s
 #### `./crates/controller`
 
 The Valence controller. Compiled WASM binary that the coprocessor service runs in order to compute the circuit witnesses from given JSON arguments. It features an entrypoint that accommodates user requests; it also receives the result of a proof computation by the service.
-
-### Nix Commands
-
-Commands mirroring `cargo-valence` functionality are available via Nix:
-
-```bash
-# Build WASM controller and SP1 circuit (with fallback dummy ELF).
-nix run .#build-wasm
-
-# Deploy to local service
-nix run .#valence-deploy -- deploy circuit
-
-# Deploy to public service
-nix run .#valence-deploy -- --socket <HOST:PORT> deploy circuit
-
-# Request proof (local)
-nix run .#valence-prove -- prove <CONTROLLER_ID> '{JSON_ARGS}' "<PATH_IN_FS>"`
-
-# Request proof (public)
-nix run .#valence-prove -- --socket <HOST:PORT> prove <CONTROLLER_ID> '{JSON_ARGS}' "<PATH_IN_FS>"
-
-# Retrieve file from VFS (local)
-nix run .#valence-storage -- fs <CONTROLLER_ID> <FILENAME.EXT>
-
-# Get raw storage data (local)
-nix run .#valence-storage -- raw <CONTROLLER_ID>
-
-# Retrieve file (public)
-nix run .#valence-storage -- --socket <HOST:PORT> fs <CONTROLLER_ID> <FILENAME.EXT>
-
-# Default dev shell
-nix develop
-
-# WASM dev shell
-nix develop .#wasm-shell
-
-# SP1 circuit dev shell
-nix develop .#sp1-shell
-```

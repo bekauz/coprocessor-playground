@@ -6,3 +6,7 @@ edition = "2024"
 [dependencies]
 bech32 = "0.11.0"
 tokio = { workspace = true }
+serde = { workspace = true }
+dotenv = { workspace = true }
+toml = { workspace = true }
+valence-domain-clients = { workspace = true }
