@@ -3,6 +3,7 @@ members = [
     "circuits/circuit_a/circuit",
     "circuits/circuit_a/controller",
     "deploy",
+    "strategist/",
 ]
 resolver = "2"
 
