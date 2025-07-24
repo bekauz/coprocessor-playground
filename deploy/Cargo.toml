@@ -16,3 +16,8 @@ valence-processor-utils = { workspace = true }
 cw20 = { workspace = true }
 cw20-base = { workspace = true }
 types = { path = "./../types" }
+valence-library-utils = { workspace = true }
+sp1-sdk = { workspace = true }
+bincode = { workspace = true }
+cosmwasm-std = { workspace = true }
+anyhow = { workspace = true }
