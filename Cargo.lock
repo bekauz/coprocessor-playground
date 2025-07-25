@@ -8430,8 +8430,13 @@ version = "0.4.2"
 dependencies = [
  "alloy-primitives 0.8.25",
  "alloy-rpc-types-eth",
+ "bincode 2.0.1",
+ "cosmwasm-std",
+ "cw20",
  "serde_json",
+ "valence-authorization-utils",
  "valence-coprocessor 0.3.7",
+ "valence-library-utils",
 ]
 
 [[package]]
