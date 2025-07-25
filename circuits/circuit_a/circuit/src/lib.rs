@@ -22,21 +22,29 @@ use valence_coprocessor::Witness;
 const CW20_ADDR: &str = "neutron10rrvph3ksn052mjqwz3gzprd8ef7gn6xgg7g539zdwqrmmfxxz0q7465ps";
 
 pub fn circuit(witnesses: Vec<Witness>) -> Vec<u8> {
+    assert_eq!(
+        witnesses.len(),
+        2,
+        "Expected 2 witnesses: account state proof & neutron addr"
+    );
     // get the state proof from first witness
-    let state = witnesses[0].as_state_proof().unwrap();
-    // this should contain the destination neutron address
-    let destination = witnesses[1].as_data().unwrap();
+    let state = witnesses[0]
+        .as_state_proof()
+        .expect("Failed to get state proof bytes");
 
     let proof: EIP1186AccountProofResponse = serde_json::from_slice(&state.proof).unwrap();
-    let neutron_addr: String =
-        bincode::serde::decode_from_slice(destination, bincode::config::standard())
-            .unwrap()
-            .0;
 
-    let evm_balance = proof.balance;
-    let evm_balance_u128 = u128::try_from(evm_balance).unwrap();
+    // this should contain the destination neutron address
+    let neutron_addr_bytes = witnesses[1]
+        .as_data()
+        .expect("Failed to get neutron_addr bytes");
+    let neutron_addr = core::str::from_utf8(neutron_addr_bytes)
+        .expect("Failed to build neutron_addr string from bytes");
 
-    let zk_msg = build_zk_msg(neutron_addr, evm_balance_u128);
+    let evm_balance_u128 =
+        u128::try_from(proof.balance).expect("Failed to convert solidity U256 to u128");
+
+    let zk_msg = build_zk_msg(neutron_addr.to_string(), evm_balance_u128);
 
     serde_json::to_vec(&zk_msg).unwrap()
 }

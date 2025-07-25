@@ -20,7 +20,7 @@ To install:
 ```bash
 cargo install \
   --git https://github.com/timewave-computer/valence-coprocessor.git \
-  --tag v0.3.7 \
+  --tag v0.3.8 \
   --locked cargo-valence
 ```
 
@@ -35,7 +35,7 @@ The circuit must be deployed with its controller. The controller is the responsi
 ```sh
 cargo-valence --socket prover.timewave.computer:37281 \
   deploy circuit \
-  --controller ./crates/controller \
+  --controller ./circuits/circuit_a/controller \
   --circuit valence-coprocessor-app-circuit
 ```
 
@@ -44,7 +44,7 @@ This will output the application id associated with the controller. Let's bind t
 ```sh
 export CONTROLLER=$(cargo-valence --socket prover.timewave.computer:37281 \
   deploy circuit \
-  --controller ./crates/controller \
+  --controller ./circuits/circuit_a/controller \
   --circuit valence-coprocessor-app-circuit | jq -r '.controller')
 ```
 
@@ -54,7 +54,7 @@ This command will queue a proof request for this circuit into the co-processor, 
 
 ```sh
 cargo-valence --socket prover.timewave.computer:37281 \
-  prove -j '{"value": 42}' \
+  prove -j '{"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}' \
   -p /var/share/proof.bin \
   $CONTROLLER
 ```
@@ -115,3 +115,9 @@ The Valence Zero-Knowledge circuit. It serves as a recipient for witness data (s
 #### `./crates/controller`
 
 The Valence controller. Compiled WASM binary that the coprocessor service runs in order to compute the circuit witnesses from given JSON arguments. It features an entrypoint that accommodates user requests; it also receives the result of a proof computation by the service.
+
+# Debug
+
+```
+curl -X POST http://prover.timewave.computer:37281/api/registry/controller/$CONTROLLER/witnesses -H "Content-Type: application/json" -d '{"args": {"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}}' | jq '.log[0]' | jq -r
+```

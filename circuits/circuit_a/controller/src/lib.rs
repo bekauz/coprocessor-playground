@@ -25,6 +25,12 @@ const DOMAIN: &str = "ethereum-electra-alpha";
 // The Controller handles proof computation results; it has an entrypoint
 // function the Coprocessor calls upon successful proof generation,
 // allowing the Controller to store the proof or log information.
+//
+// expects json input in the following format:
+// {
+//   "eth_addr": "0x...",
+//   "neutron_addr": "neutron1..."
+// }
 pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
     abi::log!(
         "received a proof request with arguments {}",
@@ -51,6 +57,11 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         ]),
     )?;
 
+    abi::log!(
+        "received proof response from alchemy: {}",
+        serde_json::to_string(&proof).unwrap_or_default()
+    )?;
+
     let proof: EIP1186AccountProofResponse = serde_json::from_value(proof)?;
 
     abi::log!(
@@ -66,19 +77,23 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
 
     let proof = serde_json::to_vec(&proof)?;
 
-    let proof = Witness::StateProof(StateProof {
-        domain: DOMAIN.into(),
-        root,
-        payload: Default::default(),
-        proof,
-    });
-
     // generate the neutron addr witness
-    let neutron_addr = args["neutron_addr"].as_str().unwrap();
-    let neutron_addr = bincode::serde::encode_to_vec(neutron_addr, bincode::config::standard())?;
-    let neutron_addr_witness = Witness::Data(neutron_addr);
+    let neutron_addr = args["neutron_addr"].as_str().unwrap().to_string();
 
-    Ok(vec![proof, neutron_addr_witness])
+    let witnesses = [
+        // witness 0: eth address state proof
+        Witness::StateProof(StateProof {
+            domain: DOMAIN.into(),
+            root,
+            payload: Default::default(),
+            proof,
+        }),
+        // witness 1: neutron addr (destination)
+        Witness::Data(neutron_addr.as_bytes().to_vec()),
+    ]
+    .to_vec();
+
+    Ok(witnesses)
 }
 
 pub fn entrypoint(args: Value) -> anyhow::Result<Value> {
