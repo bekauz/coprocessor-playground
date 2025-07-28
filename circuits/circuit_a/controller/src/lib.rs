@@ -2,7 +2,7 @@
 
 extern crate alloc;
 
-use alloc::{format, string::ToString as _, vec, vec::Vec};
+use alloc::{format, string::ToString as _, vec::Vec};
 use alloy_primitives::hex;
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
 use serde_json::{json, Value};

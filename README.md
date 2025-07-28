@@ -20,7 +20,7 @@ To install:
 ```bash
 cargo install \
   --git https://github.com/timewave-computer/valence-coprocessor.git \
-  --tag v0.3.8 \
+  --tag v0.3.12 \
   --locked cargo-valence
 ```
 
@@ -33,7 +33,7 @@ We will be using the public co-processor service. If you prefer to operate your 
 The circuit must be deployed with its controller. The controller is the responsible to compute the circuit witnesses, while the circuit is the responsible to assert the logical statements of the partial program.
 
 ```sh
-cargo-valence --socket prover.timewave.computer:37281 \
+cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
   --controller ./circuits/circuit_a/controller \
   --circuit valence-coprocessor-app-circuit
@@ -42,7 +42,7 @@ cargo-valence --socket prover.timewave.computer:37281 \
 This will output the application id associated with the controller. Let's bind this id to an environment variable, for convenience.
 
 ```sh
-export CONTROLLER=$(cargo-valence --socket prover.timewave.computer:37281 \
+export CONTROLLER=$(cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
   --controller ./circuits/circuit_a/controller \
   --circuit valence-coprocessor-app-circuit | jq -r '.controller')
@@ -53,7 +53,7 @@ export CONTROLLER=$(cargo-valence --socket prover.timewave.computer:37281 \
 This command will queue a proof request for this circuit into the co-processor, returning a promise of execution.
 
 ```sh
-cargo-valence --socket prover.timewave.computer:37281 \
+cargo-valence --socket https://service.coprocessor.valence.zone \
   prove -j '{"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}' \
   -p /var/share/proof.bin \
   $CONTROLLER
@@ -68,7 +68,7 @@ The command sends a proof request to the coprocessor's worker nodes. Once the pr
 Once the proof is computed by the backend, it will be delivered to the virtual filesystem. We can visualize it via the `storage` command.
 
 ```sh
-cargo-valence --socket prover.timewave.computer:37281 \
+cargo-valence --socket https://service.coprocessor.valence.zone \
   storage \
   -p /var/share/proof.bin \
   $CONTROLLER | jq -r '.data' | base64 -d | jq
@@ -98,7 +98,7 @@ The output should be similar to the following structure:
 We can also open the public inputs of the proof via the Valence helper:
 
 ```sh
-cargo-valence --socket 104.171.203.127:37281 \
+cargo-valence --socket https://service.coprocessor.valence.zone \
   proof-inputs \
   -p /var/share/proof.bin \
   $CONTROLLER | jq -r '.inputs' | base64 -d | hexdump -C
@@ -119,5 +119,5 @@ The Valence controller. Compiled WASM binary that the coprocessor service runs i
 # Debug
 
 ```
-curl -X POST http://prover.timewave.computer:37281/api/registry/controller/$CONTROLLER/witnesses -H "Content-Type: application/json" -d '{"args": {"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}}' | jq '.log[0]' | jq -r
+curl -X POST https://service.coprocessor.valence.zone/api/registry/controller/$CONTROLLER/witnesses -H "Content-Type: application/json" -d '{"args": {"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}}' | jq '.log[0]' | jq -r
 ```

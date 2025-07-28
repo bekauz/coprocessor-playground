@@ -6,17 +6,13 @@ authors.workspace = true
 description = "The Valence co-processor circuit definition."
 
 [dependencies]
-valence-coprocessor.workspace = true
-alloy-rpc-types-eth = { version = "0.9.2", default-features = false, features = [
-    "serde",
-] }
-alloy-primitives = { version = "0.8.25", default-features = false }
 serde_json = { workspace = true }
-bincode = { version = "2.0.1", default-features = false, features = [
-    "alloc",
-    "serde",
-] }
-cosmwasm-std = { workspace = true }
-valence-authorization-utils = { workspace = true }
-valence-library-utils = { workspace = true }
-cw20 = { workspace = true }
+bincode = { workspace = true }
+circuit-a-core.path = "../core"
+
+# valence deps
+valence-coprocessor.workspace = true
+
+# alloy
+alloy-rpc-types-eth = { workspace = true }
+alloy-primitives = { version = "0.8.25", default-features = false }

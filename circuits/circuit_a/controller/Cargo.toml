@@ -8,12 +8,15 @@ description = "The Valence co-processor controller definition."
 [dependencies]
 anyhow.workspace = true
 serde_json.workspace = true
+bincode.workspace = true
+
+# valence deps
 valence-coprocessor.workspace = true
 valence-coprocessor-wasm.workspace = true
+
+# alloy
 alloy-primitives = { version = "0.8.15", default-features = false }
-alloy-rpc-types-eth = { version = "0.9.2", default-features = false, features = [
-    "serde",
-] }
+alloy-rpc-types-eth.workspace = true
 alloy-sol-types = { version = "0.8.15", default-features = false, features = [
     "eip712-serde",
 ] }
@@ -21,7 +24,4 @@ alloy-trie = { version = "0.7.8", default-features = false, features = [
     "ethereum",
     "serde",
 ] }
-bincode = { version = "2.0.1", default-features = false, features = [
-    "alloc",
-    "serde",
-] }
+# circuit-a-core.path = "../core"
