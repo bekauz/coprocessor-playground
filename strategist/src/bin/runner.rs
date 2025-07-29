@@ -1,4 +1,4 @@
-use deploy::steps::write_output::OUTPUTS_DIR;
+use deploy::steps::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
 use strategist::strategy::Strategy;

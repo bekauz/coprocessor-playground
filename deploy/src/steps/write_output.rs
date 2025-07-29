@@ -4,7 +4,10 @@ use types::neutron_cfg::NeutronStrategyConfig;
 
 pub const OUTPUTS_DIR: &str = "artifacts/deploy";
 
-pub fn run(cd: PathBuf, neutron_cfg: NeutronStrategyConfig) -> anyhow::Result<()> {
+pub fn write_setup_artifacts(
+    cd: PathBuf,
+    neutron_cfg: NeutronStrategyConfig,
+) -> anyhow::Result<()> {
     println!("writing outputs...");
 
     // Save the Neutron Strategy Config to a toml file

@@ -4,7 +4,7 @@ const CIRCUIT_CONSTS_PATH: &str = "circuits/circuit_a/core/src/consts.rs";
 const CONTROLLER_PATH: &str = "./circuits/circuit_a/controller";
 const CIRCUIT_WORKSPACE_ID: &str = "valence-coprocessor-app-circuit";
 
-pub fn run(cd: PathBuf, cw20_addr: &str) -> anyhow::Result<String> {
+pub fn deploy_coprocessor_app(cd: PathBuf, cw20_addr: &str) -> anyhow::Result<String> {
     println!("deploying coprocessor app...");
 
     // this can also be done with env passing.

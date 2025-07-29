@@ -18,7 +18,7 @@ pub struct InstantiationOutputs {
     pub verification_gateway: String,
 }
 
-pub async fn run(
+pub async fn instantiate_contracts(
     neutron_client: &NeutronClient,
     code_ids: CodeIds,
 ) -> anyhow::Result<InstantiationOutputs> {

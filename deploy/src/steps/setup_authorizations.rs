@@ -16,7 +16,7 @@ use valence_domain_clients::{
 };
 use valence_library_utils::LibraryAccountType;
 
-pub async fn run(
+pub async fn setup_authorizations(
     neutron_client: &NeutronClient,
     ntrn_strategy_config: &NeutronStrategyConfig,
 ) -> anyhow::Result<()> {

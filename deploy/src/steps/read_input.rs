@@ -19,7 +19,7 @@ pub struct CodeIds {
     pub verification_gateway: u64,
 }
 
-pub fn run(cd: PathBuf) -> anyhow::Result<NeutronInputs> {
+pub fn read_setup_inputs(cd: PathBuf) -> anyhow::Result<NeutronInputs> {
     println!("reading inputs...");
 
     let input_dir = cd.join(format!("{INPUTS_DIR}/neutron_inputs.toml"));
