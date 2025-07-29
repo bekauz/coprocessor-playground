@@ -20,6 +20,7 @@ anyhow = { version = "1.0.83", default-features = false }
 serde_json = { version = "1.0.140", default-features = false, features = [
     "alloc",
 ] }
+valence-domain-clients = { git = "https://github.com/timewave-computer/valence-domain-clients.git", branch = "main" }
 valence-coprocessor = { git = "https://github.com/timewave-computer/valence-coprocessor.git", tag = "v0.3.12", default-features = false }
 valence-coprocessor-wasm = { git = "https://github.com/timewave-computer/valence-coprocessor.git", tag = "v0.3.12", default-features = false }
 tokio = { version = "1.45.1", features = ["macros", "rt-multi-thread"] }
@@ -38,12 +39,12 @@ opentelemetry-stdout = "0.30.0"
 opentelemetry-appender-log = "0.30.0"
 valence-authorization-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
 valence-processor-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
-valence-domain-clients = { git = "https://github.com/timewave-computer/valence-domain-clients.git", tag = "v1.0.0" }
 hex = "0.4.3"
 cw20 = "2.0.0"
 cw20-base = "2.0.0"
 valence-library-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
 sp1-sdk = { version = "5.0.0", default-features = false }
+valence-strategist-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
 
 
 bincode = { version = "2.0.1", default-features = false, features = [

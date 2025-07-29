@@ -1,2 +1,3 @@
+pub mod neutron_config;
 pub mod strategist;
-pub mod strategy_config;
+pub mod strategy;

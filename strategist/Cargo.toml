@@ -6,3 +6,10 @@ edition = "2024"
 [dependencies]
 anyhow = { workspace = true }
 tokio = { workspace = true }
+valence-domain-clients = { workspace = true }
+valence-strategist-utils = { workspace = true }
+dotenv = { workspace = true }
+serde = { workspace = true }
+async-trait = { workspace = true }
+log = { workspace = true }
+env_logger = { workspace = true }
