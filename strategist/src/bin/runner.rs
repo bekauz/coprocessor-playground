@@ -1,8 +1,8 @@
-use std::env;
-
+use deploy::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
-use strategist::{neutron_config::NeutronStrategyConfig, strategy::Strategy};
+use strategist::{strategy::Strategy};
+use types::neutron_cfg::NeutronStrategyConfig;
 use valence_strategist_utils::worker::ValenceWorker;
 use valence_strategist_utils::worker::ValenceWorkerTomlSerde;
 
@@ -18,7 +18,7 @@ async fn main() -> anyhow::Result<()> {
 
     info!(target: RUNNER, "starting the strategist runner");
 
-    let neutron_cfg_path = env::var("NEUTRON_CFG_PATH")?;
+    let neutron_cfg_path = format!("{OUTPUTS_DIR}/neutron_strategy_config.toml");
 
     info!(target: RUNNER, "Using configuration files:");
     info!(target: RUNNER, "  Neutron: {neutron_cfg_path}");

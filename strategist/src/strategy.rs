@@ -1,8 +1,8 @@
 use std::env;
 
+use types::neutron_cfg::NeutronStrategyConfig;
 use valence_domain_clients::clients::{coprocessor::CoprocessorClient, neutron::NeutronClient};
 
-use crate::neutron_config::NeutronStrategyConfig;
 
 pub struct Strategy {
     /// strategy name

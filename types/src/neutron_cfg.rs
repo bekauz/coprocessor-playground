@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use valence_strategist_utils::worker::ValenceWorkerTomlSerde;
 
 pub const REGULAR_MINT_CW20_LABEL: &str = "mint_cw20";
 pub const ZK_MINT_CW20_LABEL: &str = "zk_mint_cw20";
@@ -18,3 +19,5 @@ pub struct NeutronStrategyConfig {
     // coprocessor app id
     pub coprocessor_app_id: String,
 }
+
+impl ValenceWorkerTomlSerde for NeutronStrategyConfig {}

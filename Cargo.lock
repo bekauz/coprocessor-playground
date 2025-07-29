@@ -7375,11 +7375,13 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
+ "deploy",
  "dotenv",
  "env_logger",
  "log",
  "serde",
  "tokio",
+ "types",
  "valence-domain-clients",
  "valence-strategist-utils",
 ]
@@ -8312,6 +8314,7 @@ version = "0.1.0"
 dependencies = [
  "cosmwasm-std",
  "serde",
+ "valence-strategist-utils",
 ]
 
 [[package]]
