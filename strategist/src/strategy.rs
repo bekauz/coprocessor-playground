@@ -3,7 +3,6 @@ use std::env;
 use types::neutron_cfg::NeutronStrategyConfig;
 use valence_domain_clients::clients::{coprocessor::CoprocessorClient, neutron::NeutronClient};
 
-
 pub struct Strategy {
     /// strategy name
     pub label: String,

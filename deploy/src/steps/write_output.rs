@@ -2,7 +2,7 @@ use std::{fs, path::PathBuf};
 
 use types::neutron_cfg::NeutronStrategyConfig;
 
-use crate::inputs::OUTPUTS_DIR;
+pub const OUTPUTS_DIR: &str = "artifacts/deploy";
 
 pub fn run(cd: PathBuf, neutron_cfg: NeutronStrategyConfig) -> anyhow::Result<()> {
     println!("writing outputs...");

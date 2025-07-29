@@ -1,7 +1,5 @@
 use std::{fs, path::PathBuf};
 
-use toml::Value;
-
 const CIRCUIT_CONSTS_PATH: &str = "circuits/circuit_a/core/src/consts.rs";
 const CONTROLLER_PATH: &str = "./circuits/circuit_a/controller";
 const CIRCUIT_WORKSPACE_ID: &str = "valence-coprocessor-app-circuit";

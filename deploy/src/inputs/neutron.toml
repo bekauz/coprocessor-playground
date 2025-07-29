@@ -1,4 +1,0 @@
-grpc_url = "http://rpc.neutron.quokkastake.io"
-grpc_port = "9090"
-chain_id = "neutron-1"
-coprocessor_app_id = "55e3bdaaafebe3e62770e7b12cd13e160f5006b35c96146b3c506323e573f83e"

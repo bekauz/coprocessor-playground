@@ -6,7 +6,10 @@ use valence_domain_clients::{
     cosmos::{base_client::BaseClient, grpc_client::GrpcSigningClient, wasm_client::WasmClient},
 };
 
-use crate::{inputs::VALENCE_NEUTRON_VERIFICATION_GATEWAY, steps::read_input::CodeIds};
+use crate::steps::read_input::CodeIds;
+
+const VALENCE_NEUTRON_VERIFICATION_GATEWAY: &str =
+    "neutron1s4s64kn07vvkp267aghsh9zy9wlwqsly9xvm858gsnzj20t3nk8qm5tn9p";
 
 pub struct InstantiationOutputs {
     pub cw20: String,
