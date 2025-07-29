@@ -21,3 +21,4 @@ sp1-sdk = { workspace = true }
 bincode = "1.3.3"
 cosmwasm-std = { workspace = true }
 anyhow = { workspace = true }
+cargo-valence = { workspace = true }

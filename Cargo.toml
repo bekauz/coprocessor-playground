@@ -45,7 +45,7 @@ cw20-base = "2.0.0"
 valence-library-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
 sp1-sdk = { version = "5.0.0", default-features = false }
 valence-strategist-utils = { git = "https://github.com/timewave-computer/valence-protocol", rev = "062a77e" }
-
+cargo-valence = { git = "https://github.com/timewave-computer/valence-coprocessor.git", tag = "v0.3.12", default-features = false }
 
 bincode = { version = "2.0.1", default-features = false, features = [
     "alloc",

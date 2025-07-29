@@ -1611,6 +1611,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "cargo-valence"
+version = "0.3.12"
+source = "git+https://github.com/timewave-computer/valence-coprocessor.git?tag=v0.3.12#5cb5b00e2494bfb54ac6ed49badcb54acbc6572e"
+dependencies = [
+ "anyhow",
+ "clap",
+ "reqwest 0.12.22",
+ "serde_json",
+ "toml",
+ "valence-coprocessor",
+]
+
+[[package]]
 name = "cargo_metadata"
 version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2389,6 +2402,7 @@ dependencies = [
  "anyhow",
  "bech32 0.11.0",
  "bincode 1.3.3",
+ "cargo-valence",
  "cosmwasm-std",
  "cw20",
  "cw20-base",
@@ -6015,7 +6029,9 @@ dependencies = [
  "base64 0.22.1",
  "bytes",
  "encoding_rs",
+ "futures-channel",
  "futures-core",
+ "futures-util",
  "h2 0.4.11",
  "http 1.3.1",
  "http-body 1.0.1",
@@ -8456,6 +8472,7 @@ dependencies = [
  "buf-fs",
  "hashbrown 0.15.4",
  "msgpacker",
+ "reqwest 0.12.22",
  "serde",
  "serde_json",
  "tracing",

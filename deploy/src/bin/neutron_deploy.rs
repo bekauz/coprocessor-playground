@@ -149,6 +149,35 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     println!("CW20 Instantiated: {cw20_addr}");
 
+    let cargo_valence_app = cargo_valence::App::default();
+
+    let controller_path = "./circuits/circuit_a/controller";
+    let circuit = "valence-coprocessor-app-circuit";
+    let circuit_deployment_response =
+        cargo_valence_app.deploy_circuit(Some(controller_path), circuit)?;
+
+    let controller_id = match circuit_deployment_response.as_object() {
+        Some(obj) => {
+            let controller_id = obj.get("controller");
+            match controller_id {
+                Some(id) => id.to_string(),
+                None => {
+                    println!("failed to get controller from response object: {:?}", obj);
+                    "deployment_error".to_string()
+                }
+            }
+        }
+        None => {
+            println!(
+                "failed to deploy the circuit: {:?}",
+                circuit_deployment_response
+            );
+            "deployment_error".to_string()
+        }
+    };
+
+    println!("controller_id: {controller_id}");
+
     let neutron_cfg = NeutronStrategyConfig {
         grpc_url: input_params.grpc_url,
         grpc_port: input_params.grpc_port,
@@ -156,7 +185,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         authorizations: authorization_address,
         processor: processor_address,
         cw20: cw20_addr,
-        coprocessor_app_id: "todo".to_string(),
+        coprocessor_app_id: controller_id,
     };
 
     println!("Neutron Strategy Config created successfully");
