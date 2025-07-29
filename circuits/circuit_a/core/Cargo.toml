@@ -3,6 +3,9 @@ name = "circuit-a-core"
 version = "0.1.0"
 edition = "2024"
 
+# todo: think about adding a build.rs which would generate
+# the consts file automatically
+
 [dependencies]
 cosmwasm-std = { workspace = true }
 valence-authorization-utils = { workspace = true }

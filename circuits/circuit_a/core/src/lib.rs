@@ -16,7 +16,7 @@ use valence_authorization_utils::{
 
 extern crate alloc;
 
-pub const CW20_ADDR: &str = "neutron10rrvph3ksn052mjqwz3gzprd8ef7gn6xgg7g539zdwqrmmfxxz0q7465ps";
+mod consts;
 
 pub fn build_zk_msg(recipient: String, amount: u128) -> ZkMessage {
     let mint_cw20_msg = cw20::Cw20ExecuteMsg::Mint {
@@ -37,7 +37,7 @@ pub fn build_zk_msg(recipient: String, amount: u128) -> ZkMessage {
                 params_restrictions: None,
             },
         },
-        contract_address: valence_library_utils::LibraryAccountType::Addr(CW20_ADDR.to_string()),
+        contract_address: valence_library_utils::LibraryAccountType::Addr(consts::CW20_ADDR.to_string()),
     };
 
     let subroutine = AtomicSubroutine {
