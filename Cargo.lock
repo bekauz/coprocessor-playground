@@ -7375,14 +7375,19 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
+ "cosmwasm-std",
+ "cw20",
  "deploy",
  "dotenv",
  "env_logger",
  "log",
  "serde",
+ "serde_json",
  "tokio",
  "types",
+ "valence-authorization-utils",
  "valence-domain-clients",
+ "valence-processor-utils",
  "valence-strategist-utils",
 ]
 

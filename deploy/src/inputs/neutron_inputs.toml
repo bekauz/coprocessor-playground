@@ -5,5 +5,5 @@ chain_id = "neutron-1"
 [code_ids]
 processor = 3934
 authorizations = 3937
-verification_gateway = 3924
+verification_gateway = 4152
 cw20 = 4128

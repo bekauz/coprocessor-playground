@@ -9,7 +9,7 @@ use valence_domain_clients::{
 use crate::steps::read_input::CodeIds;
 
 const VALENCE_NEUTRON_VERIFICATION_GATEWAY: &str =
-    "neutron1s4s64kn07vvkp267aghsh9zy9wlwqsly9xvm858gsnzj20t3nk8qm5tn9p";
+    "neutron1l3fgzcqse0xw84hdpytg7vcp04kcdm95wes2zd6ap8kpujmv9cwsv45wwk";
 
 pub struct InstantiationOutputs {
     pub cw20: String,
