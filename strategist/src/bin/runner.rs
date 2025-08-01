@@ -4,7 +4,7 @@ use deploy::steps::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
 use strategist::strategy::Strategy;
-use types::neutron_cfg::NeutronStrategyConfig;
+use types::NeutronStrategyConfig;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 
 const RUNNER: &str = "runner";

@@ -1,6 +1,6 @@
 use std::env;
 
-use types::neutron_cfg::NeutronStrategyConfig;
+use types::NeutronStrategyConfig;
 use valence_domain_clients::clients::{coprocessor::CoprocessorClient, neutron::NeutronClient};
 
 pub struct Strategy {
@@ -27,15 +27,10 @@ impl Strategy {
 
         let mnemonic = env::var("MNEMONIC")?;
         let label = env::var("LABEL")?;
-        let strategy_timeout: u64 = env::var("STRATEGY_TIMEOUT")?
-            .parse()?;
+        let strategy_timeout: u64 = env::var("STRATEGY_TIMEOUT")?.parse()?;
 
-        let neutron_client = NeutronClient::new(
-            &cfg.grpc_url,
-            &cfg.grpc_port,
-            &mnemonic,
-            &cfg.chain_id,
-        ).await?;
+        let neutron_client =
+            NeutronClient::new(&cfg.grpc_url, &cfg.grpc_port, &mnemonic, &cfg.chain_id).await?;
 
         let coprocessor_client = CoprocessorClient::default();
 

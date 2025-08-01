@@ -1,6 +1,6 @@
 use cosmwasm_std::Binary;
 use sp1_sdk::{HashableKey, SP1VerifyingKey};
-use types::neutron_cfg::{NeutronStrategyConfig, REGULAR_MINT_CW20_LABEL, ZK_MINT_CW20_LABEL};
+use types::{NeutronStrategyConfig, REGULAR_MINT_CW20_LABEL, ZK_MINT_CW20_LABEL};
 use valence_authorization_utils::{
     authorization::{AuthorizationModeInfo, PermissionTypeInfo},
     authorization_message::{Message, MessageDetails, MessageType},

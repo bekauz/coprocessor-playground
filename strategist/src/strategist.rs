@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use cw20::{BalanceResponse, Cw20QueryMsg};
 use log::info;
 use serde_json::json;
-use types::neutron_cfg::ZK_MINT_CW20_LABEL;
+use types::ZK_MINT_CW20_LABEL;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 use valence_domain_clients::{
     coprocessor::base_client::{Base64, CoprocessorBaseClient, Proof},

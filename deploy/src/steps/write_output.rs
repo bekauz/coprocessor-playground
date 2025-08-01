@@ -1,6 +1,6 @@
 use std::{fs, path::PathBuf};
 
-use types::neutron_cfg::NeutronStrategyConfig;
+use types::NeutronStrategyConfig;
 
 pub const OUTPUTS_DIR: &str = "artifacts/deploy";
 
