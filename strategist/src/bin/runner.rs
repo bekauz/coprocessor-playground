@@ -1,10 +1,11 @@
+use std::fs;
+
 use deploy::steps::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
 use strategist::strategy::Strategy;
 use types::neutron_cfg::NeutronStrategyConfig;
-use valence_strategist_utils::worker::ValenceWorker;
-use valence_strategist_utils::worker::ValenceWorkerTomlSerde;
+use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 
 const RUNNER: &str = "runner";
 
@@ -14,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
     dotenv().ok();
 
     // initialize the logger
-    env_logger::init();
+    valence_coordinator_sdk::telemetry::setup_logging(None)?;
 
     info!(target: RUNNER, "starting the strategist runner");
 
@@ -23,8 +24,9 @@ async fn main() -> anyhow::Result<()> {
     info!(target: RUNNER, "Using configuration files:");
     info!(target: RUNNER, "  Neutron: {neutron_cfg_path}");
 
-    let neutron_cfg = NeutronStrategyConfig::from_file(neutron_cfg_path)
-        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    let parameters = fs::read_to_string(neutron_cfg_path)?;
+
+    let neutron_cfg: NeutronStrategyConfig = toml::from_str(&parameters)?;
 
     let strategy = Strategy::new(neutron_cfg).await?;
 

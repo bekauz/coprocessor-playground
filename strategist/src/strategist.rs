@@ -1,16 +1,13 @@
-use std::error::Error;
-
 use async_trait::async_trait;
-use cosmwasm_std::Binary;
 use cw20::{AllAccountsResponse, Cw20QueryMsg};
 use log::info;
 use serde_json::json;
 use types::neutron_cfg::ZK_MINT_CW20_LABEL;
+use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 use valence_domain_clients::{
     coprocessor::base_client::{Base64, CoprocessorBaseClient, Proof},
-    cosmos::{base_client::BaseClient, grpc_client::GrpcSigningClient, wasm_client::WasmClient},
+    cosmos::{grpc_client::GrpcSigningClient, wasm_client::WasmClient},
 };
-use valence_strategist_utils::worker::ValenceWorker;
 
 use crate::strategy::Strategy;
 
@@ -18,12 +15,12 @@ use crate::strategy::Strategy;
 // This trait defines the main loop of the strategy and inherits
 // the default implementation for spawning the worker.
 #[async_trait]
-impl ValenceWorker for Strategy {
+impl ValenceCoordinator for Strategy {
     fn get_name(&self) -> String {
         format!("Valence X-Vault: {}", self.label)
     }
 
-    async fn cycle(&mut self) -> Result<(), Box<dyn Error + Send + Sync>> {
+    async fn cycle(&mut self) -> anyhow::Result<()> {
         info!(target: "STRATEGIST", "{}: Starting cycle...", self.get_name());
 
         let eth_addr = "0x8d41bb082C6050893d1eC113A104cc4C087F2a2a";
@@ -49,8 +46,8 @@ impl ValenceWorker for Strategy {
         info!(target: "STRATEGIST", "received zkp: {:?}", resp);
 
         // extract the program and domain parameters by decoding the zkp
-        let (proof_program, inputs_program) = decode(resp.program)?;
-        let (proof_domain, inputs_domain) = decode(resp.domain)?;
+        let program_proof = decode(resp.program)?;
+        let domain_proof = decode(resp.domain)?;
 
         let cw20_accounts_response: AllAccountsResponse = self
             .neutron_client
@@ -64,49 +61,23 @@ impl ValenceWorker for Strategy {
             .await?;
         info!(target: "STRATEGIST", "cw20 accounts resp: {:?}", cw20_accounts_response);
 
-        // construct the zk authorization registration message
-        let execute_zk_authorization_msg =
-            valence_authorization_utils::msg::PermissionlessMsg::ExecuteZkAuthorization {
-                label: ZK_MINT_CW20_LABEL.to_string(),
-                message: Binary::from(inputs_program),
-                proof: Binary::from(proof_program),
-                domain_message: Binary::from(inputs_domain),
-                domain_proof: Binary::from(proof_domain),
-            };
-
+        info!(target: "STRATEGIST", "posting zkp to the authorizations contract");
         // execute the zk authorization. this will perform the verification
         // and, if successful, push the msg to the processor
-        info!(target: "STRATEGIST", "executing zk authorization");
+        valence_coordinator_sdk::core::cw::post_zkp_on_chain(
+            &self.neutron_client,
+            &self.neutron_cfg.authorizations,
+            ZK_MINT_CW20_LABEL,
+            program_proof,
+            domain_proof,
+        ).await?;
 
-        let tx_resp = self
-            .neutron_client
-            .execute_wasm(
-                &self.neutron_cfg.authorizations,
-                valence_authorization_utils::msg::ExecuteMsg::PermissionlessAction(
-                    execute_zk_authorization_msg,
-                ),
-                vec![],
-                None,
-            )
-            .await?;
-
-        // poll for inclusion to avoid account sequence mismatch errors
-        self.neutron_client.poll_for_tx(&tx_resp.hash).await?;
-
-        info!(target: "STRATEGIST", "tickticktick");
-        let tx_resp = self
-            .neutron_client
-            .execute_wasm(
-                &self.neutron_cfg.processor,
-                valence_processor_utils::msg::ExecuteMsg::PermissionlessAction(
-                    valence_processor_utils::msg::PermissionlessMsg::Tick {},
-                ),
-                vec![],
-                None,
-            )
-            .await?;
-
-        self.neutron_client.poll_for_tx(&tx_resp.hash).await?;
+        info!(target: "STRATEGIST", "ticking the processor...");
+        // tick the processor
+        valence_coordinator_sdk::core::cw::tick(
+            &self.neutron_client,
+            &self.neutron_cfg.processor,
+        ).await?;
 
         let cw20_accounts_response: AllAccountsResponse = self
             .neutron_client

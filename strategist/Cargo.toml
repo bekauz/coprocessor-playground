@@ -7,7 +7,7 @@ edition = "2024"
 anyhow = { workspace = true }
 tokio = { workspace = true }
 valence-domain-clients = { workspace = true }
-valence-strategist-utils = { workspace = true }
+valence-coordinator-sdk = { workspace = true }
 dotenv = { workspace = true }
 serde = { workspace = true }
 async-trait = { workspace = true }
@@ -20,3 +20,4 @@ cosmwasm-std = { workspace = true }
 valence-authorization-utils = { workspace = true }
 valence-processor-utils = { workspace = true }
 cw20 = { workspace = true }
+toml = { workspace = true }
