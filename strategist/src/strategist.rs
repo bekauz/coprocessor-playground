@@ -1,8 +1,8 @@
 use async_trait::async_trait;
+use common::ZK_MINT_CW20_LABEL;
 use cw20::{BalanceResponse, Cw20QueryMsg};
 use log::info;
 use serde_json::json;
-use types::ZK_MINT_CW20_LABEL;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 use valence_domain_clients::{
     coprocessor::base_client::{Base64, CoprocessorBaseClient, Proof},
@@ -10,6 +10,8 @@ use valence_domain_clients::{
 };
 
 use crate::strategy::Strategy;
+
+const STRATEGIST_LOG_TARGET: &str = "STRATEGIST";
 
 // implement the ValenceWorker trait for the Strategy struct.
 // This trait defines the main loop of the strategy and inherits
@@ -21,7 +23,7 @@ impl ValenceCoordinator for Strategy {
     }
 
     async fn cycle(&mut self) -> anyhow::Result<()> {
-        info!(target: "STRATEGIST", "{}: Starting cycle...", self.get_name());
+        info!(target: STRATEGIST_LOG_TARGET, "{}: Starting cycle...", self.get_name());
 
         let eth_addr = "0x8d41bb082C6050893d1eC113A104cc4C087F2a2a";
         let ntrn_addr = self
@@ -36,14 +38,14 @@ impl ValenceCoordinator for Strategy {
           "neutron_addr": ntrn_addr
         });
 
-        info!(target: "STRATEGIST", "posting proof request: {:?}", proof_request);
+        info!(target: STRATEGIST_LOG_TARGET, "posting proof request: {:?}", proof_request);
 
         let resp = self
             .coprocessor_client
             .prove(&self.neutron_cfg.coprocessor_app_id, &proof_request)
             .await?;
 
-        info!(target: "STRATEGIST", "received zkp: {:?}", resp);
+        info!(target: STRATEGIST_LOG_TARGET, "received zkp: {:?}", resp);
 
         // extract the program and domain parameters by decoding the zkp
         let program_proof = decode(resp.program)?;
@@ -55,9 +57,9 @@ impl ValenceCoordinator for Strategy {
                 address: ntrn_addr.to_string(),
             })
             .await?;
-        info!(target: "STRATEGIST", "cw20 balance pre-proof: {:?}", cw20_balance);
+        info!(target: STRATEGIST_LOG_TARGET, "cw20 balance pre-proof: {:?}", cw20_balance);
 
-        info!(target: "STRATEGIST", "posting zkp to the authorizations contract");
+        info!(target: STRATEGIST_LOG_TARGET, "posting zkp to the authorizations contract");
         // execute the zk authorization. this will perform the verification
         // and, if successful, push the msg to the processor
         valence_coordinator_sdk::core::cw::post_zkp_on_chain(
@@ -69,7 +71,7 @@ impl ValenceCoordinator for Strategy {
         )
         .await?;
 
-        info!(target: "STRATEGIST", "ticking the processor...");
+        info!(target: STRATEGIST_LOG_TARGET, "ticking the processor...");
         // tick the processor
         valence_coordinator_sdk::core::cw::tick(&self.neutron_client, &self.neutron_cfg.processor)
             .await?;
@@ -80,7 +82,7 @@ impl ValenceCoordinator for Strategy {
                 address: ntrn_addr,
             })
             .await?;
-        info!(target: "STRATEGIST", "cw20 balance pre-proof: {:?}", cw20_balance);
+        info!(target: STRATEGIST_LOG_TARGET, "cw20 balance pre-proof: {:?}", cw20_balance);
 
         Ok(())
     }

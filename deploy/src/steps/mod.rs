@@ -8,4 +8,4 @@ pub use deploy_coprocessor_app::deploy_coprocessor_app;
 pub use instantiate_contracts::{InstantiationOutputs, instantiate_contracts};
 pub use read_input::*;
 pub use setup_authorizations::setup_authorizations;
-pub use write_output::{OUTPUTS_DIR, write_setup_artifacts};
+pub use write_output::write_setup_artifacts;

@@ -1,10 +1,10 @@
 use std::fs;
 
-use deploy::steps::OUTPUTS_DIR;
+use common::NeutronStrategyConfig;
+use common::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
 use strategist::strategy::Strategy;
-use types::NeutronStrategyConfig;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 
 const RUNNER: &str = "runner";

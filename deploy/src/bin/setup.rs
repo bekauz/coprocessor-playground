@@ -1,7 +1,7 @@
 use std::env;
 
+use common::NeutronStrategyConfig;
 use deploy::steps;
-use types::neutron_cfg::NeutronStrategyConfig;
 use valence_domain_clients::clients::neutron::NeutronClient;
 
 #[tokio::main]

@@ -1,8 +1,7 @@
 use std::{fs, path::PathBuf};
 
-use types::NeutronStrategyConfig;
-
-pub const OUTPUTS_DIR: &str = "artifacts/deploy";
+use common::NeutronStrategyConfig;
+use common::OUTPUTS_DIR;
 
 pub fn write_setup_artifacts(
     cd: PathBuf,

@@ -5,7 +5,7 @@ members = [
     "circuits/circuit_a/core",
     "deploy",
     "strategist/",
-    "types",
+    "common",
 ]
 resolver = "2"
 

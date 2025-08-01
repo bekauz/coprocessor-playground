@@ -1,7 +1,6 @@
+use common::INPUTS_DIR;
 use serde::Deserialize;
 use std::{fs, path::PathBuf};
-
-pub const INPUTS_DIR: &str = "deploy/src/inputs";
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct NeutronInputs {
