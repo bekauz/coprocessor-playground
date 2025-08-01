@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use cw20::{AllAccountsResponse, Cw20QueryMsg};
+use cw20::{BalanceResponse, Cw20QueryMsg};
 use log::info;
 use serde_json::json;
 use types::neutron_cfg::ZK_MINT_CW20_LABEL;
@@ -49,17 +49,13 @@ impl ValenceCoordinator for Strategy {
         let program_proof = decode(resp.program)?;
         let domain_proof = decode(resp.domain)?;
 
-        let cw20_accounts_response: AllAccountsResponse = self
+        let cw20_balance: BalanceResponse = self
             .neutron_client
-            .query_contract_state(
-                &self.neutron_cfg.cw20,
-                Cw20QueryMsg::AllAccounts {
-                    start_after: None,
-                    limit: None,
-                },
-            )
+            .query_contract_state(&self.neutron_cfg.cw20, Cw20QueryMsg::Balance {
+                address: ntrn_addr.to_string(),
+            })
             .await?;
-        info!(target: "STRATEGIST", "cw20 accounts resp: {:?}", cw20_accounts_response);
+        info!(target: "STRATEGIST", "cw20 balance pre-proof: {:?}", cw20_balance);
 
         info!(target: "STRATEGIST", "posting zkp to the authorizations contract");
         // execute the zk authorization. this will perform the verification
@@ -70,26 +66,21 @@ impl ValenceCoordinator for Strategy {
             ZK_MINT_CW20_LABEL,
             program_proof,
             domain_proof,
-        ).await?;
+        )
+        .await?;
 
         info!(target: "STRATEGIST", "ticking the processor...");
         // tick the processor
-        valence_coordinator_sdk::core::cw::tick(
-            &self.neutron_client,
-            &self.neutron_cfg.processor,
-        ).await?;
-
-        let cw20_accounts_response: AllAccountsResponse = self
-            .neutron_client
-            .query_contract_state(
-                &self.neutron_cfg.cw20,
-                Cw20QueryMsg::AllAccounts {
-                    start_after: None,
-                    limit: None,
-                },
-            )
+        valence_coordinator_sdk::core::cw::tick(&self.neutron_client, &self.neutron_cfg.processor)
             .await?;
-        info!(target: "STRATEGIST", "cw20 accounts resp: {:?}", cw20_accounts_response);
+
+        let cw20_balance: BalanceResponse = self
+            .neutron_client
+            .query_contract_state(&self.neutron_cfg.cw20, Cw20QueryMsg::Balance {
+                address: ntrn_addr,
+            })
+            .await?;
+        info!(target: "STRATEGIST", "cw20 balance pre-proof: {:?}", cw20_balance);
 
         Ok(())
     }
