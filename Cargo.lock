@@ -7552,21 +7552,17 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "cosmwasm-std",
  "cw20",
  "deploy",
  "dotenv",
- "env_logger",
  "log",
  "serde",
  "serde_json",
  "tokio",
  "toml",
  "types",
- "valence-authorization-utils",
  "valence-coordinator-sdk",
  "valence-domain-clients",
- "valence-processor-utils",
 ]
 
 [[package]]
@@ -8528,9 +8524,7 @@ checksum = "1dccffe3ce07af9386bfd29e80c0ab1a8205a2fc34e4bcd40364df902cfa8f3f"
 name = "types"
 version = "0.1.0"
 dependencies = [
- "cosmwasm-std",
  "serde",
- "valence-coordinator-sdk",
 ]
 
 [[package]]

@@ -24,14 +24,18 @@ impl Strategy {
     /// the strategist.
     pub async fn new(cfg: NeutronStrategyConfig) -> anyhow::Result<Self> {
         dotenv::dotenv().ok();
-        let mnemonic = env::var("MNEMONIC").expect("mnemonic must be provided");
-        let label = env::var("LABEL").expect("label must be provided");
-        let strategy_timeout: u64 = env::var("STRATEGY_TIMEOUT")
-            .expect("Strategy timeout must be provided")
+
+        let mnemonic = env::var("MNEMONIC")?;
+        let label = env::var("LABEL")?;
+        let strategy_timeout: u64 = env::var("STRATEGY_TIMEOUT")?
             .parse()?;
 
-        let neutron_client =
-            NeutronClient::new(&cfg.grpc_url, &cfg.grpc_port, &mnemonic, &cfg.chain_id).await?;
+        let neutron_client = NeutronClient::new(
+            &cfg.grpc_url,
+            &cfg.grpc_port,
+            &mnemonic,
+            &cfg.chain_id,
+        ).await?;
 
         let coprocessor_client = CoprocessorClient::default();
 
