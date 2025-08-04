@@ -11,8 +11,8 @@ use valence_coprocessor::Witness;
 pub fn circuit(witnesses: Vec<Witness>) -> Vec<u8> {
     assert_eq!(
         witnesses.len(),
-        2,
-        "Expected 2 witnesses: account state proof & neutron addr"
+        3,
+        "Expected 3 witnesses: erc20 addr, account state proof & neutron addr"
     );
     // get the state proof from first witness
     let state = witnesses[0]

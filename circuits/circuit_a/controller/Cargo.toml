@@ -10,18 +10,14 @@ anyhow.workspace = true
 serde_json.workspace = true
 bincode.workspace = true
 
+# circuit-a-core.path = "../core"
+
 # valence deps
 valence-coprocessor.workspace = true
 valence-coprocessor-wasm.workspace = true
 
 # alloy
-alloy-primitives = { version = "0.8.15", default-features = false }
+alloy-primitives.workspace = true
 alloy-rpc-types-eth.workspace = true
-alloy-sol-types = { version = "0.8.15", default-features = false, features = [
-    "eip712-serde",
-] }
-alloy-trie = { version = "0.7.8", default-features = false, features = [
-    "ethereum",
-    "serde",
-] }
-# circuit-a-core.path = "../core"
+alloy-sol-types = { workspace = true }
+alloy-trie = { workspace = true }

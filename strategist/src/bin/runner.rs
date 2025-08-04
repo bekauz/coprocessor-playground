@@ -21,8 +21,7 @@ async fn main() -> anyhow::Result<()> {
 
     let neutron_cfg_path = format!("{OUTPUTS_DIR}/neutron_strategy_config.toml");
 
-    info!(target: RUNNER, "Using configuration files:");
-    info!(target: RUNNER, "  Neutron: {neutron_cfg_path}");
+    info!(target: RUNNER, "Using ntrn config: {neutron_cfg_path}");
 
     let parameters = fs::read_to_string(neutron_cfg_path)?;
 
@@ -35,7 +34,8 @@ async fn main() -> anyhow::Result<()> {
 
     let strategist_join_handle = strategy.start();
 
-    // join here will wait for the strategist thread to finish which should never happen in practice since it runs an infinite stayalive loop
+    // join here will wait for the strategist thread to finish which should never happen
+    // in practice since it runs an infinite stayalive loop
     match strategist_join_handle.join() {
         Ok(t) => warn!(target: RUNNER, "strategist thread completed: {t:?}"),
         Err(e) => warn!(target: RUNNER, "strategist thread completed with error: {e:?}"),

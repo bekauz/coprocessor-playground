@@ -2,9 +2,12 @@
 
 extern crate alloc;
 
+use core::str::FromStr;
+
 use alloc::{format, string::ToString as _, vec::Vec};
-use alloy_primitives::hex;
+use alloy_primitives::{hex, Address, B256};
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
+// use circuit_a_core::compute_balance_slot;
 use serde_json::{json, Value};
 use valence_coprocessor::{StateProof, Witness};
 use valence_coprocessor_wasm::abi;
@@ -28,6 +31,7 @@ const DOMAIN: &str = "ethereum-electra-alpha";
 //
 // expects json input in the following format:
 // {
+//   "erc20": "0x...",
 //   "eth_addr": "0x...",
 //   "neutron_addr": "neutron1..."
 // }
@@ -37,31 +41,43 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         serde_json::to_string(&args).unwrap_or_default()
     )?;
 
+    let contract_addr = args["erc20_contract"].as_str().unwrap();
+    let eth_addr = args["eth_addr"].as_str().unwrap();
+    let eth_addr = Address::from_str(eth_addr)?;
+    let neutron_addr = args["neutron_addr"].as_str().unwrap().to_string();
+
     let block =
         abi::get_latest_block(DOMAIN)?.ok_or_else(|| anyhow::anyhow!("no valid domain block"))?;
 
     let root = block.root;
     let block = format!("{:#x}", block.number);
 
-    // unpack the addresses. ideally we would pass a pubkey here
-    // and derive them
-    let eth_addr = args["eth_addr"].as_str().unwrap();
+    // let balance_slot = compute_balance_slot(eth_addr);
+    let balance_slot = B256::default();
+    // let proof = abi::alchemy(
+    //     NETWORK,
+    //     "eth_getProof",
+    //     &json!([
+    //         eth_addr,
+    //         [], // no storage slots to prove, just need eth balance
+    //         block,
+    //     ]),
+    // )?;
 
     let proof = abi::alchemy(
         NETWORK,
         "eth_getProof",
         &json!([
-            eth_addr,
-            [], // no storage slots to prove, just need eth balance
+            contract_addr,
+            [format!("0x{}", hex::encode(balance_slot))],
             block,
         ]),
     )?;
 
     abi::log!(
         "received proof response from alchemy: {}",
-        serde_json::to_string(&proof).unwrap_or_default()
+        serde_json::to_string_pretty(&proof).unwrap_or_default()
     )?;
-
     let proof: EIP1186AccountProofResponse = serde_json::from_value(proof)?;
 
     abi::log!(
@@ -75,19 +91,16 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         .unwrap_or_default()
     )?;
 
-    let proof = serde_json::to_vec(&proof)?;
-
-    // generate the neutron addr witness
-    let neutron_addr = args["neutron_addr"].as_str().unwrap().to_string();
+    // let proof = serde_json::to_vec(&proof)?;
 
     let witnesses = [
         // witness 0: eth address state proof
-        Witness::StateProof(StateProof {
-            domain: DOMAIN.into(),
-            root,
-            payload: Default::default(),
-            proof,
-        }),
+        // Witness::StateProof(StateProof {
+        //     domain: DOMAIN.into(),
+        //     root,
+        //     payload: Default::default(),
+        //     proof,
+        // }),
         // witness 1: neutron addr (destination)
         Witness::Data(neutron_addr.as_bytes().to_vec()),
     ]

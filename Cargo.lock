@@ -1786,6 +1786,7 @@ dependencies = [
 name = "circuit-a-core"
 version = "0.1.0"
 dependencies = [
+ "alloy-primitives 0.8.25",
  "cosmwasm-std",
  "cw20",
  "hex",

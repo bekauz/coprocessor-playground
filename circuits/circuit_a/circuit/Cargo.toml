@@ -15,4 +15,4 @@ valence-coprocessor.workspace = true
 
 # alloy
 alloy-rpc-types-eth = { workspace = true }
-alloy-primitives = { version = "0.8.25", default-features = false }
+alloy-primitives = { workspace = true }

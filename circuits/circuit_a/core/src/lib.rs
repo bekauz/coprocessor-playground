@@ -4,6 +4,7 @@ use alloc::{
     string::{String, ToString as _},
     vec::Vec,
 };
+use alloy_primitives::{Address, B256, keccak256};
 use cosmwasm_std::{Uint128, to_json_binary};
 use valence_authorization_utils::{
     authorization::{AtomicSubroutine, AuthorizationMsg, Priority, Subroutine},
@@ -17,6 +18,15 @@ use valence_authorization_utils::{
 extern crate alloc;
 
 mod consts;
+
+pub fn compute_balance_slot(address: Address) -> B256 {
+    let mut buf = [0u8; 64];
+    // left-pad the address into the first 32 bytes
+    buf[12..32].copy_from_slice(address.as_slice()); // pad address to 32 bytes
+    // slot index = 0, which is already 32 zero bytes at buf[32..64]
+
+    keccak256(buf)
+}
 
 pub fn build_zk_msg(recipient: String, amount: u128) -> ZkMessage {
     let mint_cw20_msg = cw20::Cw20ExecuteMsg::Mint {
