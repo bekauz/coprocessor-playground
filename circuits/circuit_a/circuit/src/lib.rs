@@ -4,7 +4,6 @@ extern crate alloc;
 
 use alloc::string::ToString as _;
 use alloc::vec::Vec;
-use alloy_primitives::Address;
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
 
 use valence_coprocessor::Witness;
