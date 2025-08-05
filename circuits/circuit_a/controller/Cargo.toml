@@ -9,9 +9,8 @@ description = "The Valence co-processor controller definition."
 anyhow.workspace = true
 serde_json.workspace = true
 bincode.workspace = true
-rlp = { version = "0.6.1", default-features = false }
 
-# circuit-a-core.path = "../core"
+circuit-a-core.path = "../core"
 
 # valence deps
 valence-coprocessor.workspace = true
@@ -20,6 +19,3 @@ valence-coprocessor-wasm.workspace = true
 # alloy
 alloy-primitives.workspace = true
 alloy-rpc-types-eth.workspace = true
-alloy-sol-types = { workspace = true }
-alloy-trie = { workspace = true }
-alloy-rlp = { workspace = true }
