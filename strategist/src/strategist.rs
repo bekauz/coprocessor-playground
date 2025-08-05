@@ -25,6 +25,8 @@ impl ValenceCoordinator for Strategy {
     async fn cycle(&mut self) -> anyhow::Result<()> {
         info!(target: STRATEGIST_LOG_TARGET, "{}: Starting cycle...", self.get_name());
 
+        let usdc_erc20_addr = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+
         let eth_addr = "0x8d41bb082C6050893d1eC113A104cc4C087F2a2a";
         let ntrn_addr = self
             .neutron_client
@@ -34,6 +36,7 @@ impl ValenceCoordinator for Strategy {
             .to_string();
 
         let proof_request = json!({
+          "erc20": usdc_erc20_addr,
           "eth_addr": eth_addr,
           "neutron_addr": ntrn_addr
         });

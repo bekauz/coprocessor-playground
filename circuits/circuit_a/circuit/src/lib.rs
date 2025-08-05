@@ -13,29 +13,25 @@ pub fn circuit(witnesses: Vec<Witness>) -> Vec<u8> {
     assert_eq!(
         witnesses.len(),
         3,
-        "Expected 3 witnesses: erc20 addr, account state proof & neutron addr"
+        "Expected 3 witnesses: account state proof, neutron addr, and erc20 addr"
     );
-    // get the state proof from first witness
-    let state = witnesses[0]
+    // extract the witnesses
+    let state_proof_bytes = witnesses[0]
         .as_state_proof()
         .expect("Failed to get state proof bytes");
+    let proof: EIP1186AccountProofResponse =
+        serde_json::from_slice(&state_proof_bytes.proof).unwrap();
+    // let root = state_proof_bytes.root;
 
-    let proof: EIP1186AccountProofResponse = serde_json::from_slice(&state.proof).unwrap();
+    let neutron_addr = core::str::from_utf8(witnesses[1].as_data().unwrap()).unwrap();
 
-    // this should contain the destination neutron address
-    let neutron_addr_bytes = witnesses[1]
-        .as_data()
-        .expect("Failed to get neutron_addr bytes");
-    let neutron_addr = core::str::from_utf8(neutron_addr_bytes)
-        .expect("Failed to build neutron_addr string from bytes");
+    // let erc20_addr = Address::from_slice(witnesses[2].as_data().unwrap());
 
-    let erc20_addr_bytes = witnesses[2]
-        .as_data()
-        .expect("failed to get erc20 addr bytes");
-    let erc20_addr = Address::from_slice(erc20_addr_bytes);
-
-    let evm_balance_u128 =
-        u128::try_from(proof.balance).expect("Failed to convert solidity U256 to u128");
+    // naive, for testing
+    let evm_balance = proof.storage_proof[0].value;
+    let evm_balance_u128: u128 = evm_balance
+        .try_into()
+        .expect("failed to parse U256 -> u128");
 
     let zk_msg = circuit_a_core::build_zk_msg(neutron_addr.to_string(), evm_balance_u128);
 
