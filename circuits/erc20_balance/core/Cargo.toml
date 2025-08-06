@@ -3,9 +3,6 @@ name = "erc20-balance-core"
 version = "0.1.0"
 edition = "2024"
 
-# todo: think about adding a build.rs which would generate
-# the consts file automatically
-
 [dependencies]
 alloy-primitives = { workspace = true }
 alloy-rlp = { workspace = true }

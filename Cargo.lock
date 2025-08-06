@@ -1391,16 +1391,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bincode"
-version = "2.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36eaf5d7b090263e8150820482d5d93cd964a81e4019913c972f4edcc6edb740"
-dependencies = [
- "serde",
- "unty",
-]
-
-[[package]]
 name = "bindgen"
 version = "0.70.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2470,7 +2460,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bech32 0.11.0",
- "bincode 1.3.3",
+ "bincode",
  "cargo-valence",
  "common",
  "cosmwasm-std",
@@ -2836,7 +2826,6 @@ version = "0.4.2"
 dependencies = [
  "alloy-primitives 0.8.25",
  "alloy-rpc-types-eth",
- "bincode 2.0.1",
  "cosmwasm-std",
  "cw20",
  "erc20-balance-core",
@@ -2853,7 +2842,6 @@ dependencies = [
  "alloy-primitives 0.8.25",
  "alloy-rpc-types-eth",
  "anyhow",
- "bincode 2.0.1",
  "erc20-balance-core",
  "serde_json",
  "valence-coprocessor",
@@ -7106,7 +7094,7 @@ version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a585a154b0b43d75481c5e58057c3dd72d88c8a36b30205a2365718e493cd2d"
 dependencies = [
- "bincode 1.3.3",
+ "bincode",
  "bytemuck",
  "clap",
  "elf",
@@ -7145,7 +7133,7 @@ version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "20e23baf403939adcbe73070bf03f41da26e0d4a18382408a945606cb168fb0d"
 dependencies = [
- "bincode 1.3.3",
+ "bincode",
  "cbindgen",
  "cc",
  "cfg-if",
@@ -7202,7 +7190,7 @@ version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2efa1d0adcc7744ca6427898ba8ce4e8a5d94540e674b5c2e136821f086376f"
 dependencies = [
- "bincode 1.3.3",
+ "bincode",
  "ctrlc",
  "prost 0.13.5",
  "serde",
@@ -7251,7 +7239,7 @@ version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b40a70ba0e385efc08ad88e289589d818f1e0c72525eee424e230e4e72565e5"
 dependencies = [
- "bincode 1.3.3",
+ "bincode",
  "elliptic-curve",
  "serde",
  "sp1-primitives",
@@ -7263,7 +7251,7 @@ version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5504d5a422be065fa8f1fc49ff5208017d6e3fe7e392a7761e73178581f5f35d"
 dependencies = [
- "bincode 1.3.3",
+ "bincode",
  "blake3",
  "cfg-if",
  "hex",
@@ -7284,7 +7272,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afaa1d5a3ccb8b366ec109c396681fdc07d8c637aa6003889f171aaac86d18ed"
 dependencies = [
  "anyhow",
- "bincode 1.3.3",
+ "bincode",
  "clap",
  "dirs",
  "downloader",
@@ -7439,7 +7427,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b10e8e6519c601ee244ff29d2746787d524034b4dbe42a1d66f901386396febd"
 dependencies = [
  "anyhow",
- "bincode 1.3.3",
+ "bincode",
  "bindgen",
  "cc",
  "cfg-if",
@@ -7467,7 +7455,7 @@ dependencies = [
  "alloy-sol-types 1.3.0",
  "anyhow",
  "async-trait",
- "bincode 1.3.3",
+ "bincode",
  "cfg-if",
  "dirs",
  "eventsource-stream",
@@ -8618,12 +8606,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
 
 [[package]]
-name = "unty"
-version = "0.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae"
-
-[[package]]
 name = "url"
 version = "2.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8712,7 +8694,7 @@ dependencies = [
  "alloy",
  "anyhow",
  "async-trait",
- "bincode 1.3.3",
+ "bincode",
  "cosmwasm-std",
  "dotenv",
  "env_logger",
