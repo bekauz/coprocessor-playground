@@ -1,5 +1,5 @@
 [package]
-name = "erc20-balance-circuit"
+name = "storage-proof-circuit"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -12,7 +12,7 @@ valence-authorization-utils = { workspace = true }
 valence-library-utils = { workspace = true }
 cw20 = { workspace = true }
 
-erc20-balance-core.path = "../core"
+storage-proof-core.path = "../core"
 
 # valence deps
 valence-coprocessor.workspace = true

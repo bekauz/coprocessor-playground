@@ -1,5 +1,5 @@
 [package]
-name = "erc20-balance-core"
+name = "storage-proof-core"
 version = "0.1.0"
 edition = "2024"
 

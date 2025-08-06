@@ -33,7 +33,7 @@ impl ValenceCoordinator for Strategy {
             .address
             .to_string();
 
-        let circuit_inputs = erc20_balance_core::ControllerInputs {
+        let circuit_inputs = storage_proof_core::ControllerInputs {
             erc20: USDC_ERC20_ADDR.to_string(),
             eth_addr: SRC_ETH_ADDR.to_string(),
             neutron_addr: ntrn_addr.to_string(),

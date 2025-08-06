@@ -1,8 +1,8 @@
 deploy:
     cargo-valence --socket https://service.coprocessor.valence.zone \
       deploy circuit \
-      --controller ./circuits/erc20_balance/controller \
-      --circuit erc20-balance-circuit | jq -r '.controller' > artifacts/.controller
+      --controller ./circuits/storage_proof/controller \
+      --circuit storage-proof-circuit | jq -r '.controller' > artifacts/.controller
 
 prove:
     cargo-valence --socket https://service.coprocessor.valence.zone \

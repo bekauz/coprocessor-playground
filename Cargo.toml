@@ -1,8 +1,8 @@
 [workspace]
 members = [
-    "circuits/erc20_balance/circuit",
-    "circuits/erc20_balance/controller",
-    "circuits/erc20_balance/core",
+    "circuits/storage_proof/circuit",
+    "circuits/storage_proof/controller",
+    "circuits/storage_proof/core",
     "deploy",
     "strategist/",
     "common",

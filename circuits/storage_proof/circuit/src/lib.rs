@@ -6,8 +6,8 @@ use alloc::string::{String, ToString as _};
 use alloc::vec::Vec;
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
 
-use erc20_balance_core::consts::CW20_ADDR;
-use erc20_balance_core::proof::verify_proof;
+use storage_proof_core::consts::CW20_ADDR;
+use storage_proof_core::proof::verify_proof;
 use valence_coprocessor::Witness;
 
 use cosmwasm_std::{to_json_binary, Uint128};

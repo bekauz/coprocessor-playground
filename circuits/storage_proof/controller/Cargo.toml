@@ -1,5 +1,5 @@
 [package]
-name = "erc20-balance-controller"
+name = "storage-proof-controller"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -9,7 +9,7 @@ description = "The Valence co-processor controller definition."
 anyhow.workspace = true
 serde_json.workspace = true
 
-erc20-balance-core.path = "../core"
+storage-proof-core.path = "../core"
 # common.path = "../../../common"
 
 # valence deps
