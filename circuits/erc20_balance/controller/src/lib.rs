@@ -28,12 +28,7 @@ const DOMAIN: &str = "ethereum-electra-alpha";
 // function the Coprocessor calls upon successful proof generation,
 // allowing the Controller to store the proof or log information.
 //
-// expects json input in the following format:
-// {
-//   "erc20": "0x...",
-//   "eth_addr": "0x...",
-//   "neutron_addr": "neutron1..."
-// }
+// expects ControllerInputs serialized as json
 pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
     let args_pretty = serde_json::to_string_pretty(&args)?;
     abi::log!("received a proof request with arguments {args_pretty}")?;
@@ -46,24 +41,24 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         abi::get_latest_block(DOMAIN)?.ok_or_else(|| anyhow::anyhow!("no valid domain block"))?;
 
     let root = block.root;
+    abi::log!("root: {}", hex::encode(root))?;
+
     let block = format!("{:#x}", block.number);
 
-    // 9 for usdc, probably different index for most erc20
+    // 9 for usdc, possibly different index for most erc20
     let slot_key = mapping_slot_key(eth_addr, 9u64);
+    let slot_key = format!("{:#x}", slot_key);
 
-    abi::log!("storage key = 0x{}", hex::encode(slot_key))?;
+    abi::log!("storage key = {slot_key}")?;
 
     let proof = abi::alchemy(
         NETWORK,
         "eth_getProof",
-        &json!([erc20_addr, [format!("0x{}", hex::encode(slot_key))], block,]),
+        &json!([erc20_addr, [slot_key], block]),
     )?;
 
     let proof: EIP1186AccountProofResponse = serde_json::from_value(proof)?;
-
-    let pretty_proof = serde_json::to_string_pretty(&proof)?;
-    abi::log!("{pretty_proof}")?;
-    abi::log!("root: {}", hex::encode(root))?;
+    abi::log!("proof: {}", serde_json::to_string_pretty(&proof)?)?;
     let proof = serde_json::to_vec(&proof)?;
 
     let state_proof = StateProof {
@@ -78,8 +73,6 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         Witness::StateProof(state_proof),
         // witness 1: neutron addr (destination)
         Witness::Data(witness_inputs.neutron_addr.as_bytes().to_vec()),
-        // witness 2: erc20 addr (src)
-        Witness::Data(erc20_addr.to_vec()),
     ]
     .to_vec();
 

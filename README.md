@@ -2,14 +2,61 @@
 
 This is a template for a Valence app.
 
+It is configured for an application that leverages ZK-proofs in order to post
+Ethereum ERC20 contract balances to a CW20 contract deployed on Neutron.
+
+## Structure
+
+### `./circuits`
+
+The Valence Zero-Knowledge circuits directory.
+
+Inside it you will find `erc20_balance` circuit, controller, and core crates that
+will perform erc20 storage proofs.
+
+#### Circuit
+
+It serves as a recipient for witness data (state proofs or data) from the associated controller. It carries out assertions based on business logic and outputs a `Vec<u8>`, which is subsequently forwarded to on-chain applications.
+
+#### Controller
+
+Compiled WASM binary that the coprocessor service runs in order to compute the circuit witnesses from given JSON arguments. It features an entrypoint that accommodates user requests; it also receives the result of a proof computation by the service.
+
+#### Core
+
+Core crate will contain any types, methods, or other helpers that may be relevant to both the circuit and controller.
+
+### `./deploy`
+
+Valence Program and Circuit deployment script.
+
+### `./strategist`
+
+Valence Coordinator that submits proof requests to the co-processor, and posts the proofs
+to the Valence Authorizations contract on Neutron.
+
 ## Requirements
 
 - [Docker](https://docs.docker.com/get-started/)
 - [Rust](https://www.rust-lang.org/tools/install)
-- [Cargo Valence subcommand](https://github.com/timewave-computer/valence-coprocessor/tree/v0.3.1?tab=readme-ov-file#cli-helper)
-- (Optional): [Valence co-processor instance](https://github.com/timewave-computer/valence-coprocessor/tree/v0.3.1?tab=readme-ov-file#local-execution)
+- (only for manual debugging): [Cargo Valence subcommand](https://github.com/timewave-computer/valence-coprocessor/tree/v0.3.12?tab=readme-ov-file#cli-helper)
+- (Optional): [Valence co-processor instance](https://github.com/timewave-computer/valence-coprocessor/tree/v0.3.12?tab=readme-ov-file#local-execution)
 
 ## Instructions
+
+There are two ways to interact with your co-processor application.
+
+First is the manual approach where you can leverage the `cargo-valence` package
+to deploy your circuit to the co-processor.
+
+Alternatively, you can take the automated approach where `deploy` crate binary
+will do the deployment for you. After that, running the `strategist` crate
+binary will perform the proof requests.
+
+### Manual instructions
+
+This section contains the instructions for manual interaction and debugging of a
+co-processor app.
 
 #### Install Cargo Valence
 
@@ -35,8 +82,8 @@ The circuit must be deployed with its controller. The controller is the responsi
 ```sh
 cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
-  --controller ./circuits/erc20_circuit/controller \
-  --circuit valence-coprocessor-app-circuit
+  --controller ./circuits/erc20_balance/controller \
+  --circuit erc20-balance-circuit
 ```
 
 This will output the application id associated with the controller. Let's bind this id to an environment variable, for convenience.
@@ -44,8 +91,8 @@ This will output the application id associated with the controller. Let's bind t
 ```sh
 export CONTROLLER=$(cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
-  --controller ./circuits/erc20_circuit/controller \
-  --circuit valence-coprocessor-app-circuit | jq -r '.controller')
+  --controller ./circuits/erc20_balance/controller \
+  --circuit erc20-balance-circuit | jq -r '.controller')
 ```
 
 #### Prove
@@ -54,7 +101,7 @@ This command will queue a proof request for this circuit into the co-processor, 
 
 ```sh
 cargo-valence --socket https://service.coprocessor.valence.zone \
-  prove -j '{"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}' \
+  prove -j '{"erc20":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}' \
   -p /var/share/proof.bin \
   $CONTROLLER
 ```
@@ -106,18 +153,49 @@ cargo-valence --socket https://service.coprocessor.valence.zone \
 
 Note: The first 32 bytes of the public inputs are reserved for the co-processor root.
 
-### Structure
+### Automated Instructions
 
-#### `./crates/circuit`
+Outlined below are the automated deployment and runtime instructions that
+will enable the e2e flow of erc20 -> cw20 ZK-based queries.
 
-The Valence Zero-Knowledge circuit. It serves as a recipient for witness data (state proofs or data) from the associated controller. It carries out assertions based on business logic and outputs a `Vec<u8>`, which is subsequently forwarded to on-chain applications.
+#### Mnemonic setup
 
-#### `./crates/controller`
+Full flow will involve transaction execution on Neutron. To enable that,
+a mnemonic with available ntrn token balances is needed.
 
-The Valence controller. Compiled WASM binary that the coprocessor service runs in order to compute the circuit witnesses from given JSON arguments. It features an entrypoint that accommodates user requests; it also receives the result of a proof computation by the service.
+To configure your mnemonic, run the following:
 
-# Debug
-
+```bash
+cp .example.env .env
 ```
-curl -X POST https://service.coprocessor.valence.zone/api/registry/controller/$CONTROLLER/witnesses -H "Content-Type: application/json" -d '{"args": {"eth_addr":"0x8d41bb082C6050893d1eC113A104cc4C087F2a2a","neutron_addr": "neutron1m6w8n0hluq7avn40hj0n6jnj8ejhykfrwfnnjh"}}' | jq '.log[0]' | jq -r
+
+Then open the created `.env` file and replace `todo` with your mnemonic seed phrase.
+
+#### Run the deployment script
+
+`deploy` crate `main.rs` contains an automated script which will perform the
+following actions:
+
+1. Fetch the mnemonic from `env`
+2. Read the input parameters from `deploy/src/inputs/neutron_inputs.toml`
+3. Instantiate the neutron program on-chain
+4. Compile and deploy the co-processor application
+5. Set up the on-chain authorizations
+6. Produce the setup artifacts which will be used as runtime inputs
+
+You can execute the sequence above by running:
+
+```bash
+RUST_LOG=info cargo run -p deploy
+```
+
+#### Execute the runtime script
+
+After the deployment script produces valid output artifact in `artifacts/neutron_strategy_config.toml`,
+you are ready to start the coordinator that will submit the proof requests and post them on-chain.
+
+You can start the coordinator by running:
+
+```bash
+RUST_LOG=info cargo run -p strategist
 ```

@@ -4,7 +4,7 @@ pub const REGULAR_MINT_CW20_LABEL: &str = "mint_cw20";
 pub const ZK_MINT_CW20_LABEL: &str = "zk_mint_cw20";
 
 pub const INPUTS_DIR: &str = "deploy/src/inputs";
-pub const OUTPUTS_DIR: &str = "artifacts/deploy";
+pub const OUTPUTS_DIR: &str = "artifacts";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NeutronStrategyConfig {
@@ -21,10 +21,3 @@ pub struct NeutronStrategyConfig {
     // coprocessor app id
     pub coprocessor_app_id: String,
 }
-
-// #[derive(Debug, Serialize, Deserialize)]
-// pub struct CircuitInputs {
-//     pub erc20: String,
-//     pub eth_addr: String,
-//     pub neutron_addr: String,
-// }

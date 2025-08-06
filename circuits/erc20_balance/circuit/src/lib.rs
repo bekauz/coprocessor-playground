@@ -21,21 +21,26 @@ use valence_authorization_utils::{
 };
 
 pub fn circuit(witnesses: Vec<Witness>) -> Vec<u8> {
-    assert_eq!(
-        witnesses.len(),
-        3,
-        "Expected 3 witnesses: account state proof, neutron addr, and erc20 addr"
+    assert!(
+        witnesses.len() == 2,
+        "Expected 2 witnesses: account state proof and neutron addr"
     );
+
     // extract the witnesses
     let state_proof_bytes = witnesses[0]
         .as_state_proof()
         .expect("Failed to get state proof bytes");
-    let proof: EIP1186AccountProofResponse =
-        serde_json::from_slice(&state_proof_bytes.proof).unwrap();
+    let neutron_addr_bytes = witnesses[1]
+        .as_data()
+        .expect("failed to get neutron addr bytes");
 
-    let neutron_addr = core::str::from_utf8(witnesses[1].as_data().unwrap()).unwrap();
+    let proof: EIP1186AccountProofResponse = serde_json::from_slice(&state_proof_bytes.proof)
+        .expect("failed to deserialize the proof bytes");
 
     verify_proof(&proof).expect("proof verification failed");
+
+    let neutron_addr = core::str::from_utf8(neutron_addr_bytes)
+        .expect("failed to convert neutron addr bytes to str");
 
     let evm_balance = proof.storage_proof[0].value;
     let evm_balance_u128: u128 = evm_balance
@@ -44,7 +49,8 @@ pub fn circuit(witnesses: Vec<Witness>) -> Vec<u8> {
 
     let zk_msg = build_zk_msg(neutron_addr.to_string(), evm_balance_u128);
 
-    serde_json::to_vec(&zk_msg).unwrap()
+    serde_json::to_vec(&zk_msg)
+        .expect("failed to serialize the zk authorization message to json vec")
 }
 
 pub fn build_zk_msg(recipient: String, amount: u128) -> ZkMessage {

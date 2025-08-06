@@ -1,4 +1,4 @@
-pub mod strategist;
+pub mod coordinator;
 pub mod strategy;
 
 use std::fs;
