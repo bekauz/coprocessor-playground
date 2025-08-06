@@ -1783,19 +1783,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "circuit-a-core"
-version = "0.1.0"
-dependencies = [
- "alloy-primitives 0.8.25",
- "alloy-rlp",
- "alloy-rpc-types-eth",
- "alloy-serde",
- "alloy-trie",
- "hex",
- "serde_json",
-]
-
-[[package]]
 name = "clang-sys"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2842,6 +2829,49 @@ name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
+
+[[package]]
+name = "erc20-balance-circuit"
+version = "0.4.2"
+dependencies = [
+ "alloy-primitives 0.8.25",
+ "alloy-rpc-types-eth",
+ "bincode 2.0.1",
+ "cosmwasm-std",
+ "cw20",
+ "erc20-balance-core",
+ "serde_json",
+ "valence-authorization-utils",
+ "valence-coprocessor",
+ "valence-library-utils",
+]
+
+[[package]]
+name = "erc20-balance-controller"
+version = "0.4.2"
+dependencies = [
+ "alloy-primitives 0.8.25",
+ "alloy-rpc-types-eth",
+ "anyhow",
+ "bincode 2.0.1",
+ "erc20-balance-core",
+ "serde_json",
+ "valence-coprocessor",
+ "valence-coprocessor-wasm",
+]
+
+[[package]]
+name = "erc20-balance-core"
+version = "0.1.0"
+dependencies = [
+ "alloy-primitives 0.8.25",
+ "alloy-rlp",
+ "alloy-rpc-types-eth",
+ "alloy-serde",
+ "alloy-trie",
+ "hex",
+ "serde_json",
+]
 
 [[package]]
 name = "errno"
@@ -8719,36 +8749,6 @@ dependencies = [
  "serde_json",
  "tracing",
  "zerocopy",
-]
-
-[[package]]
-name = "valence-coprocessor-app-circuit"
-version = "0.4.2"
-dependencies = [
- "alloy-primitives 0.8.25",
- "alloy-rpc-types-eth",
- "bincode 2.0.1",
- "circuit-a-core",
- "cosmwasm-std",
- "cw20",
- "serde_json",
- "valence-authorization-utils",
- "valence-coprocessor",
- "valence-library-utils",
-]
-
-[[package]]
-name = "valence-coprocessor-app-controller"
-version = "0.4.2"
-dependencies = [
- "alloy-primitives 0.8.25",
- "alloy-rpc-types-eth",
- "anyhow",
- "bincode 2.0.1",
- "circuit-a-core",
- "serde_json",
- "valence-coprocessor",
- "valence-coprocessor-wasm",
 ]
 
 [[package]]

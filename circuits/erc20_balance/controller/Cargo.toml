@@ -1,5 +1,5 @@
 [package]
-name = "valence-coprocessor-app-controller"
+name = "erc20-balance-controller"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -10,7 +10,7 @@ anyhow.workspace = true
 serde_json.workspace = true
 bincode.workspace = true
 
-circuit-a-core.path = "../core"
+erc20-balance-core.path = "../core"
 
 # valence deps
 valence-coprocessor.workspace = true

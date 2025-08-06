@@ -1,5 +1,5 @@
 [package]
-name = "circuit-a-core"
+name = "erc20-balance-core"
 version = "0.1.0"
 edition = "2024"
 
