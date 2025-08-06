@@ -1,7 +1,10 @@
 use alloy_primitives::{Address, B256, U256, keccak256};
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
-use alloy_trie::{Nibbles, proof::ProofVerificationError};
+use alloy_trie::Nibbles;
+use anyhow::ensure;
 
+/// given an eth address and a slot index for erc20 balances mapping,
+/// returns the keccak256 bytes used to access the target storage slot
 pub fn mapping_slot_key(holder: Address, slot_index: u64) -> B256 {
     // left-pad address to 32 bytes
     let mut addr_padded = [0u8; 32];
@@ -17,7 +20,14 @@ pub fn mapping_slot_key(holder: Address, slot_index: u64) -> B256 {
     keccak256(preimage)
 }
 
-pub fn verify_proof(proof: &EIP1186AccountProofResponse) -> Result<(), ProofVerificationError> {
+/// verifies a `EIP1186AccountProofResponse` storage proof.
+/// errors if there is more than one proof in the array.
+pub fn verify_proof(proof: &EIP1186AccountProofResponse) -> anyhow::Result<()> {
+    ensure!(
+        proof.storage_proof.len() == 1,
+        "proof must contain a single storage proof entry"
+    );
+
     // get the root, not sure if this is the right one?
     let storage_root: B256 = proof.storage_hash;
     // grab the first (and only) storage proof
@@ -40,6 +50,7 @@ pub fn verify_proof(proof: &EIP1186AccountProofResponse) -> Result<(), ProofVeri
         Some(expected_value_rlp),
         node_iter,
     )
+    .map_err(|e| anyhow::anyhow!(e))
 }
 
 #[cfg(test)]
@@ -90,6 +101,17 @@ mod tests {
     fn test_proof_verification() {
         let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
         let proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        verify_proof(&proof).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_proof_verification_multiple_storage_proofs() {
+        let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
+        let mut proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        proof.storage_proof.push(proof.storage_proof[0].clone());
 
         verify_proof(&proof).unwrap();
     }

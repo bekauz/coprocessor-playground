@@ -18,7 +18,7 @@ cw20-base = { workspace = true }
 common = { path = "./../common" }
 valence-library-utils = { workspace = true }
 sp1-sdk = { workspace = true }
-bincode = "1.3.3"
+bincode = { workspace = true }
 cosmwasm-std = { workspace = true }
 anyhow = { workspace = true }
 cargo-valence = { workspace = true }

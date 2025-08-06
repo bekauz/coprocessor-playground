@@ -21,3 +21,10 @@ pub struct NeutronStrategyConfig {
     // coprocessor app id
     pub coprocessor_app_id: String,
 }
+
+// #[derive(Debug, Serialize, Deserialize)]
+// pub struct CircuitInputs {
+//     pub erc20: String,
+//     pub eth_addr: String,
+//     pub neutron_addr: String,
+// }

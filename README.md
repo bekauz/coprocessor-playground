@@ -35,7 +35,7 @@ The circuit must be deployed with its controller. The controller is the responsi
 ```sh
 cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
-  --controller ./circuits/circuit_a/controller \
+  --controller ./circuits/erc20_circuit/controller \
   --circuit valence-coprocessor-app-circuit
 ```
 
@@ -44,7 +44,7 @@ This will output the application id associated with the controller. Let's bind t
 ```sh
 export CONTROLLER=$(cargo-valence --socket https://service.coprocessor.valence.zone \
   deploy circuit \
-  --controller ./circuits/circuit_a/controller \
+  --controller ./circuits/erc20_circuit/controller \
   --circuit valence-coprocessor-app-circuit | jq -r '.controller')
 ```
 

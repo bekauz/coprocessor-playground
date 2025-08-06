@@ -1,7 +1,8 @@
+mod steps;
+
 use std::env;
 
 use common::NeutronStrategyConfig;
-use deploy::steps;
 use valence_domain_clients::clients::neutron::NeutronClient;
 
 #[tokio::main]

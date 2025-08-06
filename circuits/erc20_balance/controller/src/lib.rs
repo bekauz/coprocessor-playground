@@ -6,7 +6,7 @@ use core::str::FromStr;
 use alloc::{format, string::ToString as _, vec::Vec};
 use alloy_primitives::{hex, Address};
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
-use erc20_balance_core::proof::mapping_slot_key;
+use erc20_balance_core::{proof::mapping_slot_key, CircuitInputs};
 use serde_json::{json, Value};
 use valence_coprocessor::{StateProof, Witness};
 use valence_coprocessor_wasm::abi;
@@ -38,11 +38,9 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
     let args_pretty = serde_json::to_string_pretty(&args)?;
     abi::log!("received a proof request with arguments {args_pretty}")?;
 
-    let erc20_addr = args["erc20"].as_str().unwrap();
-    let erc20_addr = Address::from_str(erc20_addr)?;
-    let eth_addr = args["eth_addr"].as_str().unwrap();
-    let eth_addr = Address::from_str(eth_addr)?;
-    let neutron_addr = args["neutron_addr"].as_str().unwrap().to_string();
+    let witness_inputs: CircuitInputs = serde_json::from_value(args)?;
+    let erc20_addr = Address::from_str(&witness_inputs.erc20)?;
+    let eth_addr = Address::from_str(&witness_inputs.eth_addr)?;
 
     let block =
         abi::get_latest_block(DOMAIN)?.ok_or_else(|| anyhow::anyhow!("no valid domain block"))?;
@@ -79,7 +77,7 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
         // witness 0: eth address state proof
         Witness::StateProof(state_proof),
         // witness 1: neutron addr (destination)
-        Witness::Data(neutron_addr.as_bytes().to_vec()),
+        Witness::Data(witness_inputs.neutron_addr.as_bytes().to_vec()),
         // witness 2: erc20 addr (src)
         Witness::Data(erc20_addr.to_vec()),
     ]

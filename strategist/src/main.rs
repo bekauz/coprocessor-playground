@@ -1,10 +1,13 @@
+pub mod strategist;
+pub mod strategy;
+
 use std::fs;
 
 use common::NeutronStrategyConfig;
 use common::OUTPUTS_DIR;
 use dotenv::dotenv;
 use log::{info, warn};
-use strategist::strategy::Strategy;
+use strategy::Strategy;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 
 const RUNNER: &str = "runner";

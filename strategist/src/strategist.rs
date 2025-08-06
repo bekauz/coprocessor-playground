@@ -2,7 +2,6 @@ use async_trait::async_trait;
 use common::ZK_MINT_CW20_LABEL;
 use cw20::{BalanceResponse, Cw20QueryMsg};
 use log::info;
-use serde_json::json;
 use valence_coordinator_sdk::coordinator::ValenceCoordinator;
 use valence_domain_clients::{
     coprocessor::base_client::{Base64, CoprocessorBaseClient, Proof},
@@ -35,13 +34,14 @@ impl ValenceCoordinator for Strategy {
             .address
             .to_string();
 
-        let proof_request = json!({
-          "erc20": usdc_erc20_addr,
-          "eth_addr": eth_addr,
-          "neutron_addr": ntrn_addr
-        });
+        let circuit_inputs = erc20_balance_core::CircuitInputs {
+            erc20: usdc_erc20_addr.to_string(),
+            eth_addr: eth_addr.to_string(),
+            neutron_addr: ntrn_addr.to_string(),
+        };
 
-        info!(target: STRATEGIST_LOG_TARGET, "posting proof request: {:?}", proof_request);
+        let proof_request = serde_json::to_value(circuit_inputs)?;
+        info!(target: STRATEGIST_LOG_TARGET, "posting proof request: {proof_request}");
 
         let resp = self
             .coprocessor_client
@@ -85,7 +85,7 @@ impl ValenceCoordinator for Strategy {
                 address: ntrn_addr,
             })
             .await?;
-        info!(target: STRATEGIST_LOG_TARGET, "cw20 balance pre-proof: {:?}", cw20_balance);
+        info!(target: STRATEGIST_LOG_TARGET, "cw20 balance post-proof: {:?}", cw20_balance);
 
         Ok(())
     }

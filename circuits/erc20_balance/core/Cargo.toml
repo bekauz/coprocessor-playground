@@ -4,12 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = { workspace = true }
+serde_json = { workspace = true }
+serde = { workspace = true, default-features = false, features = ["derive"] }
+
 alloy-primitives = { workspace = true }
 alloy-rlp = { workspace = true }
 alloy-trie = { workspace = true }
 alloy-rpc-types-eth = { workspace = true }
-
-serde_json = { workspace = true }
 
 [dev-dependencies]
 hex = { workspace = true }

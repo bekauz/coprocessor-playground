@@ -1,8 +1,8 @@
 use std::{fs, path::PathBuf};
 
-const CIRCUIT_CONSTS_PATH: &str = "circuits/circuit_a/core/src/consts.rs";
-const CONTROLLER_PATH: &str = "./circuits/circuit_a/controller";
-const CIRCUIT_WORKSPACE_ID: &str = "valence-coprocessor-app-circuit";
+const CIRCUIT_CONSTS_PATH: &str = "circuits/erc20_balance/core/src/consts.rs";
+const CONTROLLER_PATH: &str = "./circuits/erc20_balance/controller";
+const CIRCUIT_WORKSPACE_ID: &str = "erc20-balance-circuit";
 
 pub fn deploy_coprocessor_app(cd: PathBuf, cw20_addr: &str) -> anyhow::Result<String> {
     println!("deploying coprocessor app...");

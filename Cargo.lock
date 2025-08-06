@@ -2857,7 +2857,9 @@ dependencies = [
  "alloy-rpc-types-eth",
  "alloy-serde",
  "alloy-trie",
+ "anyhow",
  "hex",
+ "serde",
  "serde_json",
 ]
 
@@ -7581,6 +7583,7 @@ dependencies = [
  "common",
  "cw20",
  "dotenv",
+ "erc20-balance-core",
  "log",
  "serde",
  "serde_json",
