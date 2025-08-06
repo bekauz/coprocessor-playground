@@ -93,4 +93,54 @@ mod tests {
 
         verify_proof(&proof).unwrap();
     }
+
+    #[test]
+    #[should_panic]
+    fn test_proof_verification_invalid_storage_hash() {
+        let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
+        let mut proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        proof.storage_hash.rotate_left(1);
+        verify_proof(&proof).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_proof_verification_invalid_storage_proof_value() {
+        let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
+        let mut proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        let current_val = proof.storage_proof[0].value;
+
+        proof.storage_proof[0].value = current_val.rotate_left(1);
+
+        verify_proof(&proof).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_proof_verification_invalid_storage_proof_proof() {
+        let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
+        let mut proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        proof.storage_proof[0].proof.rotate_left(1);
+
+        verify_proof(&proof).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_proof_verification_invalid_storage_proof_key() {
+        let data: Value = serde_json::from_str(EIP_1186_ACC_PROOF_RESPONSE).unwrap();
+        let mut proof: EIP1186AccountProofResponse = serde_json::from_value(data).unwrap();
+
+        let mut current_key_bytes = proof.storage_proof[0].key.as_b256();
+        current_key_bytes.rotate_left(1);
+
+        let invalid_key = alloy_serde::JsonStorageKey::from(current_key_bytes);
+
+        proof.storage_proof[0].key = invalid_key;
+
+        verify_proof(&proof).unwrap();
+    }
 }

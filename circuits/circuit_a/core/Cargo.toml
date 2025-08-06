@@ -16,3 +16,4 @@ serde_json = { workspace = true }
 
 [dev-dependencies]
 hex = { workspace = true }
+alloy-serde = { workspace = true }

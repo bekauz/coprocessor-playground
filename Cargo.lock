@@ -1789,6 +1789,7 @@ dependencies = [
  "alloy-primitives 0.8.25",
  "alloy-rlp",
  "alloy-rpc-types-eth",
+ "alloy-serde",
  "alloy-trie",
  "hex",
  "serde_json",
