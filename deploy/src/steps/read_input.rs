@@ -15,7 +15,6 @@ pub struct CodeIds {
     pub authorizations: u64,
     pub processor: u64,
     pub cw20: u64,
-    pub verification_gateway: u64,
 }
 
 pub fn read_setup_inputs(cd: PathBuf) -> anyhow::Result<NeutronInputs> {

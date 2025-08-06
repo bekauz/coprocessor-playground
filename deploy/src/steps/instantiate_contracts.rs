@@ -15,7 +15,6 @@ pub struct InstantiationOutputs {
     pub cw20: String,
     pub processor: String,
     pub authorizations: String,
-    pub verification_gateway: String,
 }
 
 pub async fn instantiate_contracts(
@@ -131,7 +130,6 @@ pub async fn instantiate_contracts(
         cw20: cw20_addr,
         processor: processor_address,
         authorizations: authorization_address,
-        verification_gateway: VALENCE_NEUTRON_VERIFICATION_GATEWAY.to_string(),
     };
 
     Ok(outputs)

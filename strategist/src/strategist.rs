@@ -11,6 +11,8 @@ use valence_domain_clients::{
 use crate::strategy::Strategy;
 
 const STRATEGIST_LOG_TARGET: &str = "STRATEGIST";
+const USDC_ERC20_ADDR: &str = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const SRC_ETH_ADDR: &str = "0x8d41bb082C6050893d1eC113A104cc4C087F2a2a";
 
 // implement the ValenceWorker trait for the Strategy struct.
 // This trait defines the main loop of the strategy and inherits
@@ -24,9 +26,6 @@ impl ValenceCoordinator for Strategy {
     async fn cycle(&mut self) -> anyhow::Result<()> {
         info!(target: STRATEGIST_LOG_TARGET, "{}: Starting cycle...", self.get_name());
 
-        let usdc_erc20_addr = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-
-        let eth_addr = "0x8d41bb082C6050893d1eC113A104cc4C087F2a2a";
         let ntrn_addr = self
             .neutron_client
             .get_signing_client()
@@ -34,15 +33,16 @@ impl ValenceCoordinator for Strategy {
             .address
             .to_string();
 
-        let circuit_inputs = erc20_balance_core::CircuitInputs {
-            erc20: usdc_erc20_addr.to_string(),
-            eth_addr: eth_addr.to_string(),
+        let circuit_inputs = erc20_balance_core::ControllerInputs {
+            erc20: USDC_ERC20_ADDR.to_string(),
+            eth_addr: SRC_ETH_ADDR.to_string(),
             neutron_addr: ntrn_addr.to_string(),
         };
 
         let proof_request = serde_json::to_value(circuit_inputs)?;
         info!(target: STRATEGIST_LOG_TARGET, "posting proof request: {proof_request}");
 
+        // submit the proof request to the coprocessor
         let resp = self
             .coprocessor_client
             .prove(&self.neutron_cfg.coprocessor_app_id, &proof_request)
@@ -54,17 +54,18 @@ impl ValenceCoordinator for Strategy {
         let program_proof = decode(resp.program)?;
         let domain_proof = decode(resp.domain)?;
 
+        let cw20_bal_query = Cw20QueryMsg::Balance {
+            address: ntrn_addr.to_string(),
+        };
         let cw20_balance: BalanceResponse = self
             .neutron_client
-            .query_contract_state(&self.neutron_cfg.cw20, Cw20QueryMsg::Balance {
-                address: ntrn_addr.to_string(),
-            })
+            .query_contract_state(&self.neutron_cfg.cw20, &cw20_bal_query)
             .await?;
         info!(target: STRATEGIST_LOG_TARGET, "cw20 balance pre-proof: {:?}", cw20_balance);
 
-        info!(target: STRATEGIST_LOG_TARGET, "posting zkp to the authorizations contract");
         // execute the zk authorization. this will perform the verification
         // and, if successful, push the msg to the processor
+        info!(target: STRATEGIST_LOG_TARGET, "posting zkp to the authorizations contract");
         valence_coordinator_sdk::core::cw::post_zkp_on_chain(
             &self.neutron_client,
             &self.neutron_cfg.authorizations,
@@ -74,16 +75,14 @@ impl ValenceCoordinator for Strategy {
         )
         .await?;
 
-        info!(target: STRATEGIST_LOG_TARGET, "ticking the processor...");
         // tick the processor
+        info!(target: STRATEGIST_LOG_TARGET, "ticking the processor...");
         valence_coordinator_sdk::core::cw::tick(&self.neutron_client, &self.neutron_cfg.processor)
             .await?;
 
         let cw20_balance: BalanceResponse = self
             .neutron_client
-            .query_contract_state(&self.neutron_cfg.cw20, Cw20QueryMsg::Balance {
-                address: ntrn_addr,
-            })
+            .query_contract_state(&self.neutron_cfg.cw20, cw20_bal_query)
             .await?;
         info!(target: STRATEGIST_LOG_TARGET, "cw20 balance post-proof: {:?}", cw20_balance);
 

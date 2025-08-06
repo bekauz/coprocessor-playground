@@ -6,7 +6,7 @@ use core::str::FromStr;
 use alloc::{format, string::ToString as _, vec::Vec};
 use alloy_primitives::{hex, Address};
 use alloy_rpc_types_eth::EIP1186AccountProofResponse;
-use erc20_balance_core::{proof::mapping_slot_key, CircuitInputs};
+use erc20_balance_core::{proof::mapping_slot_key, ControllerInputs};
 use serde_json::{json, Value};
 use valence_coprocessor::{StateProof, Witness};
 use valence_coprocessor_wasm::abi;
@@ -38,7 +38,7 @@ pub fn get_witnesses(args: Value) -> anyhow::Result<Vec<Witness>> {
     let args_pretty = serde_json::to_string_pretty(&args)?;
     abi::log!("received a proof request with arguments {args_pretty}")?;
 
-    let witness_inputs: CircuitInputs = serde_json::from_value(args)?;
+    let witness_inputs: ControllerInputs = serde_json::from_value(args)?;
     let erc20_addr = Address::from_str(&witness_inputs.erc20)?;
     let eth_addr = Address::from_str(&witness_inputs.eth_addr)?;
 
